@@ -1,62 +1,240 @@
 # First Contribution Map
 
-A working Streamlit proof of concept that turns a public GitHub repository into a newcomer-friendly entry map. It reads the repository README and up to ten recent open issues, then produces:
+First Contribution Map is a Streamlit proof of concept that helps developers understand an unfamiliar open-source project before making their first contribution.
 
-1. A high-level project summary.
-2. A likely architecture map and approachable component seams.
-3. Exactly three grounded first-contribution candidates, with a reason and concrete first step for each.
+Paste a public GitHub repository URL and the app turns the repository's README, metadata, and recent open issues into a practical entry map:
 
-The app does not clone repositories, inspect private data, or write to GitHub.
+- A plain-language summary of what the project does.
+- A likely architecture overview and the main component boundaries.
+- Three candidate cards drawn from open issues, with clearly labeled placeholders when a repository has too few issues.
+- A reason each real issue is approachable, the skills involved, and a concrete first step.
+- A Markdown report that can be downloaded and shared.
 
-## What is included
+> **Project status:** Working POC. Recommendations are generated from limited public context and should be confirmed with the repository maintainers before work begins.
 
-- Public GitHub URL validation and REST API integration.
-- README, repository metadata, and recent non-pull-request issue fetching.
-- Gemini structured output validated with Pydantic.
-- Issue-number grounding so generated recommendations must refer to supplied issues.
-- Prompt-injection boundaries around untrusted README and issue text.
-- Deterministic local analysis when no Gemini key is supplied.
-- A bundled, network-free demo and Markdown export.
-- Responsive, accessible Streamlit interface and automated tests.
+## Try it in two minutes
 
-## Run locally
+After completing the dependency installation in [Local setup](#local-setup), you can explore the full interface without an API key or internet access:
 
-Python 3.11–3.13 is recommended.
+1. Start the app with `streamlit run app.py`.
+2. Open the local address shown in the terminal.
+3. Select **View demo**.
+
+The demo uses a bundled repository snapshot and deterministic local analysis. Nothing is sent to GitHub or Gemini.
+
+To analyze a live project, paste a URL such as:
+
+```text
+https://github.com/streamlit/streamlit
+```
+
+Repository subpages such as `/issues` or `/tree/main` are also accepted. Only public GitHub repositories are supported.
+
+## How it works
+
+```mermaid
+flowchart LR
+    U[Public GitHub URL] --> A[Streamlit app]
+    A --> G[GitHub REST API]
+    G --> C[Public repository context]
+    C --> R[Metadata displayed in the UI]
+    C --> P[Repository URL + bounded README + issue fields]
+    P --> D{Gemini key available?}
+    D -- Yes --> M[Gemini structured analysis]
+    D -- No --> H[Deterministic local analysis]
+    M --> E[Validated entry map]
+    H --> E
+    R --> V[Interactive results + Markdown download]
+    E --> V
+```
+
+The app never clones the repository and never writes to GitHub. Pull requests returned by GitHub's issues endpoint are excluded.
+
+## Main features
+
+| Feature | What it provides |
+| --- | --- |
+| Project summary | A concise explanation of the repository's purpose based on supplied public context. |
+| Architecture map | Likely components and seams inferred from the README. |
+| Beginner issue ranking | Three candidate cards; real recommendations are grounded in recent open issues and missing slots are labeled placeholders. |
+| Actionable guidance | A reason, likely skills, and a suggested first action for every recommendation. |
+| Gemini and local modes | Gemini provides richer analysis; the deterministic fallback keeps the app useful without a key. |
+| Guided demo | A network-free example that is ready immediately. |
+| Markdown export | A downloadable contribution map for notes or sharing. |
+| Safe URL handling | User input is validated and requests are limited to GitHub's API. |
+
+## Local setup
+
+### Requirements
+
+- Python 3.11, 3.12, or 3.13
+- `pip`
+- Internet access for live GitHub repositories
+- Optional: a Gemini API key for model-generated analysis
+- Optional: a GitHub personal access token for a higher API request limit
+
+### macOS or Linux
 
 ```bash
-python -m venv .venv
+git clone https://github.com/samu998676/First-Contribution-Map.git
+cd First-Contribution-Map
+python3 -m venv .venv
 source .venv/bin/activate
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 cp .env.example .env
 streamlit run app.py
 ```
 
-Open the local URL printed by Streamlit. The **View demo** path works without credentials or network access.
+### Windows PowerShell
 
-To analyze live repositories, anonymous GitHub access is enough for light use. Add `GITHUB_TOKEN` to `.env` if you need a higher GitHub request limit.
+```powershell
+git clone https://github.com/samu998676/First-Contribution-Map.git
+cd First-Contribution-Map
+py -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+Copy-Item .env.example .env
+streamlit run app.py
+```
 
-For Gemini analysis, create a key in [Google AI Studio](https://aistudio.google.com/apikey) and add it to `.env`:
+Open the local URL displayed by Streamlit, normally `http://localhost:8501`.
+
+## Configuration
+
+The app works without credentials. Add values to the local `.env` file only when you need the corresponding capability:
 
 ```dotenv
-GEMINI_API_KEY=your_key_here
+GEMINI_API_KEY=
+GITHUB_TOKEN=
 GEMINI_MODEL=gemini-3.7-flash
 ```
 
-Credentials and model selection are read from `.env`; they are not shown in the application interface.
+| Variable | Required? | Purpose |
+| --- | --- | --- |
+| `GEMINI_API_KEY` | No | Enables Gemini-generated summaries, architecture insights, and issue ranking. Create a key in [Google AI Studio](https://aistudio.google.com/apikey). |
+| `GITHUB_TOKEN` | No | Increases the GitHub API request limit for live analysis. Anonymous access is sufficient for light use. |
+| `GEMINI_MODEL` | No | Overrides the configured Gemini model. The code currently defaults to `gemini-3.7-flash`. |
 
-## Why the model differs from the original prompt
+Do not commit `.env`, `.streamlit/secrets.toml`, API keys, or access tokens. The secret files are ignored, but never place credentials in another tracked file.
 
-The original project brief names Gemini 1.5 Flash. That model has been retired, so this POC uses Google’s current Flash model (`gemini-3.7-flash`) through the current `google-genai` SDK. `GEMINI_MODEL` keeps the choice configurable.
+### Analysis modes
 
-## Test
+- **Guided demo:** Uses bundled data and never makes a network request.
+- **Local analysis:** Fetches public repository context from GitHub and ranks issues with deterministic heuristics.
+- **Gemini analysis:** Sends the bounded README and issue context to the configured Gemini model and validates its structured response.
+- **Local fallback:** Automatically returns a local result if Gemini is unavailable or returns an invalid response.
+
+If a repository has fewer than three usable open issues, the app creates clearly labeled local placeholders rather than inventing GitHub issue numbers.
+
+## Using the app
+
+1. Paste a public GitHub repository URL.
+2. Select **Generate contribution map**.
+3. Review the project summary, likely architecture, component seams, and three candidate cards.
+4. Open an issue on GitHub to confirm that it is current and unclaimed.
+5. Read the project's `CONTRIBUTING.md` and communicate with maintainers before starting a substantial change.
+6. Use **Download map** to save the result as Markdown.
+
+## Deploy on Streamlit Community Cloud
+
+1. Push this repository to GitHub.
+2. Sign in at [Streamlit Community Cloud](https://share.streamlit.io/).
+3. Create an app and select this repository.
+4. Choose the `main` branch and set the entry point to `app.py`.
+5. In **Advanced settings → Secrets**, add any optional credentials as root-level TOML values:
+
+   ```toml
+   GEMINI_API_KEY = "your-key"
+   GITHUB_TOKEN = "your-token"
+   GEMINI_MODEL = "gemini-3.7-flash"
+   ```
+
+6. Select **Deploy**.
+
+The app can be deployed without secrets; it will use anonymous GitHub requests and local analysis.
+
+## Project structure
+
+```text
+First-Contribution-Map/
+├── app.py                    # Streamlit interface and result rendering
+├── assets/
+│   └── styles.css            # Application styling
+├── src/
+│   ├── analyzer.py           # Gemini prompt, validation, and local fallback
+│   ├── demo_data.py          # Bundled network-free demo context
+│   └── github_client.py      # GitHub URL validation and API client
+├── tests/                    # Analyzer, GitHub client, and UI tests
+├── .streamlit/
+│   └── config.toml           # Streamlit theme and server defaults
+├── .env.example              # Optional configuration template
+├── requirements.txt          # Runtime dependencies
+└── requirements-dev.txt      # Test dependencies
+```
+
+## Development and testing
+
+Install the development dependencies and run the test suite:
 
 ```bash
 pip install -r requirements-dev.txt
 pytest
 ```
 
-The test suite covers URL safety, GitHub response handling, deterministic analysis, schema guarantees, the demo flow, and actionable input errors.
+The tests cover repository URL parsing, successful GitHub response handling and pull-request filtering, deterministic analysis, placeholder behavior, a core schema invariant, and basic Streamlit flows.
 
-## POC boundaries
+## Troubleshooting
 
-The architecture map is inferred from README text; the app does not inspect the full file tree. “Beginner-friendly” is a recommendation, not a guarantee—contributors should read `CONTRIBUTING.md`, confirm that an issue is current and unclaimed, and coordinate with maintainers before starting substantial work.
+### GitHub rate limit reached
+
+Wait for the anonymous limit to reset or add a valid `GITHUB_TOKEN` to `.env`. The token only needs permission to read the public repository data you want to analyze.
+
+### Repository cannot be accessed
+
+Confirm that the URL points to `github.com/owner/repository` and that the repository is public. Private repositories are intentionally rejected.
+
+### Gemini is unavailable
+
+Check `GEMINI_API_KEY` and `GEMINI_MODEL`. The app will normally show a local fallback map so the workflow can continue.
+
+### Fewer than three real issue recommendations
+
+The repository may not have enough recent open issues. The app labels placeholder suggestions clearly and never presents them as real GitHub issues.
+
+### The architecture does not match the codebase
+
+The POC infers architecture from the README and repository metadata; it does not inspect the complete file tree. Treat the map as orientation, then verify it against the source and project documentation.
+
+## Privacy and safety
+
+- Only public GitHub metadata, README content, and recent open issues are fetched.
+- Repository URLs are validated before any request is made.
+- Private repositories are not supported.
+- Repositories are not cloned or modified.
+- README and issue text are treated as untrusted data inside the Gemini prompt.
+- Input is bounded and truncated before model analysis.
+- Generated issue recommendations are validated against the supplied GitHub issues.
+- Credentials are read from environment variables and are not displayed in the app.
+
+## POC limitations
+
+- Architecture is inferred from documentation, not from full source-code analysis.
+- Beginner suitability is a recommendation, not a guarantee of scope or maintainer acceptance.
+- Only the README and up to ten recent open issues are considered.
+- GitHub's anonymous API limit can affect live use.
+- Model output can still be incomplete or inaccurate despite schema and grounding checks.
+- This repository does not currently include a software license.
+
+## Contributing
+
+Contributions are welcome. A simple workflow is:
+
+1. Fork the repository.
+2. Create a focused branch.
+3. Make and test your change.
+4. Run `pytest`.
+5. Open a pull request that explains the problem, the solution, and how it was verified.
+
+Good POC follow-up ideas include full file-tree analysis, configurable issue filters, contribution-readiness scoring, caching, accessibility checks, and richer deployment documentation.
