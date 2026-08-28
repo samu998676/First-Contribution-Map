@@ -40,8 +40,8 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
     menu_items={
-        "Get Help": "https://github.com/",
-        "About": "Turn a public repository README and recent issues into a practical first-contribution map.",
+        "Get Help": "https://github.com/samu998676/First-Contribution-Map/issues",
+        "About": "Turn a public GitHub repository into a clear project summary, likely architecture map, and three beginner-friendly contribution paths.",
     },
 )
 

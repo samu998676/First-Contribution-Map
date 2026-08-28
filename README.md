@@ -1,34 +1,39 @@
 # First Contribution Map
 
-First Contribution Map is a Streamlit proof of concept that helps developers understand an unfamiliar open-source project before making their first contribution.
+**Understand a repository. Find your first meaningful pull request.**
 
-Paste a public GitHub repository URL and the app turns the repository's README, metadata, and recent open issues into a practical entry map:
+[Launch the public app](https://samu998676.github.io/First-Contribution-Map/) · [Watch the 49-second HD overview](https://samu998676.github.io/First-Contribution-Map/media/first-contribution-map-overview.mp4) · [Report an issue](https://github.com/samu998676/First-Contribution-Map/issues)
 
-- A plain-language summary of what the project does.
-- A likely architecture overview and the main component boundaries.
-- Three candidate cards drawn from open issues, with clearly labeled placeholders when a repository has too few issues.
-- A reason each real issue is approachable, the skills involved, and a concrete first step.
-- A Markdown report that can be downloaded and shared.
+[![First Contribution Map product overview](https://samu998676.github.io/First-Contribution-Map/media/first-contribution-map-overview-poster.jpg)](https://samu998676.github.io/First-Contribution-Map/media/first-contribution-map-overview.mp4)
 
-> **Project status:** Working POC. Recommendations are generated from limited public context and should be confirmed with the repository maintainers before work begins.
+First Contribution Map turns a public GitHub repository into a newcomer-friendly entry map. It explains what the project does, outlines its likely architecture and seams, and highlights three beginner-oriented candidates, with clearly labeled placeholders when fewer open issues are available.
 
-## Public website
+| Challenge | Solution | Outcome |
+| --- | --- | --- |
+| New contributors face a large codebase, unfamiliar terminology, and an issue list with no obvious starting point. | Review the repository's public README, metadata, and recent open issues as one focused onboarding flow. | Spend less time decoding context and start a useful, appropriately scoped contribution with more confidence. |
 
-Open **[First Contribution Map](https://samu998676.github.io/First-Contribution-Map/)** in any modern browser. The GitHub Pages version is public and requires no account, sign-in, API key, or installation.
+### What the map includes
 
-The public website reads public repository metadata, README content, and recent open issues directly from GitHub. It performs deterministic analysis in the browser and never clones or writes to the repository.
+- A plain-language project summary.
+- A qualified architecture overview based on the available documentation.
+- Likely component boundaries and seams worth exploring.
+- Three beginner-oriented issue candidates grounded in recent open issues.
+- A reason, useful skills, and a concrete first action for each candidate.
+- A downloadable Markdown report for notes or sharing.
 
-Watch or download the **[49-second HD product overview](https://samu998676.github.io/First-Contribution-Map/media/first-contribution-map-overview.mp4)** for a concise explanation of the challenge, the solution, and the complete workflow.
+> **Project status:** Working POC with a public GitHub Pages deployment. Recommendations use limited public context and should be confirmed with repository maintainers before work begins.
 
-## Try it in two minutes
+## Use the public app
 
-For the quickest start, open the [public website](https://samu998676.github.io/First-Contribution-Map/) and select **View guided demo**. To run the Python/Streamlit version locally without an API key or internet access:
+The fastest path requires no account, sign-in, API key, or installation:
 
-1. Start the app with `streamlit run app.py`.
-2. Open the local address shown in the terminal.
-3. Select **View demo**.
+1. Open **[First Contribution Map](https://samu998676.github.io/First-Contribution-Map/)**.
+2. Select **View guided demo**, or paste the URL of any public GitHub repository.
+3. Select **Generate contribution map**.
+4. Review the summary, likely architecture, seams, and three candidate cards.
+5. Download the Markdown map or open a candidate issue on GitHub.
 
-The demo uses a bundled repository snapshot and deterministic local analysis. Nothing is sent to GitHub or Gemini.
+The browser app uses public GitHub data, runs deterministic analysis in the browser, and never clones or writes to a repository. The guided demo uses a bundled snapshot and makes no network request.
 
 To analyze a live project, paste a URL such as:
 
@@ -38,22 +43,28 @@ https://github.com/streamlit/streamlit
 
 Repository subpages such as `/issues` or `/tree/main` are also accepted. Only public GitHub repositories are supported.
 
+## Two implementations, one workflow
+
+| Implementation | Best for | Credentials |
+| --- | --- | --- |
+| **Public Next.js app** in `site/` | Trying the product immediately and sharing a public link | None; it uses anonymous public GitHub requests |
+| **Optional Python/Streamlit prototype** in `app.py` and `src/` | Local development, Gemini-assisted analysis, and higher GitHub API limits | Optional `GEMINI_API_KEY` and `GITHUB_TOKEN`, stored only in the local environment |
+
 ## How it works
 
 ```mermaid
 flowchart LR
-    U[Public GitHub URL] --> A[Streamlit app]
-    A --> G[GitHub REST API]
-    G --> C[Public repository context]
-    C --> R[Metadata displayed in the UI]
-    C --> P[Repository URL + bounded README + issue fields]
-    P --> D{Gemini key available?}
-    D -- Yes --> M[Gemini structured analysis]
-    D -- No --> H[Deterministic local analysis]
-    M --> E[Validated entry map]
-    H --> E
-    R --> V[Interactive results + Markdown download]
-    E --> V
+    U[Public GitHub URL] --> X{Choose an experience}
+    X --> W[Public Next.js web app]
+    X --> P[Optional Python prototype]
+    W --> G[GitHub REST API]
+    P --> G
+    G --> C[README, metadata, and recent open issues]
+    C --> H[Deterministic browser or local analysis]
+    C --> M[Optional Gemini analysis in Python]
+    H --> E[Validated entry map]
+    M --> E
+    E --> V[Interactive results and Markdown download]
 ```
 
 The app never clones the repository and never writes to GitHub. Pull requests returned by GitHub's issues endpoint are excluded.
@@ -66,12 +77,14 @@ The app never clones the repository and never writes to GitHub. Pull requests re
 | Architecture map | Likely components and seams inferred from the README. |
 | Beginner issue ranking | Three candidate cards; real recommendations are grounded in recent open issues and missing slots are labeled placeholders. |
 | Actionable guidance | A reason, likely skills, and a suggested first action for every recommendation. |
-| Gemini and local modes | Gemini provides richer analysis; the deterministic fallback keeps the app useful without a key. |
+| Two analysis options | The public app uses deterministic analysis; the optional Python prototype can add Gemini-assisted analysis. |
 | Guided demo | A network-free example that is ready immediately. |
 | Markdown export | A downloadable contribution map for notes or sharing. |
 | Safe URL handling | User input is validated and requests are limited to GitHub's API. |
 
-## Local setup
+## Optional Python + Gemini prototype
+
+The repository also includes the original Python/Streamlit implementation. Use it when you want Gemini-generated analysis, a GitHub token for higher API limits, or local development of the Python analysis pipeline.
 
 ### Requirements
 
@@ -109,7 +122,7 @@ streamlit run app.py
 
 Open the local URL displayed by Streamlit, normally `http://localhost:8501`.
 
-## Configuration
+### Configuration
 
 The app works without credentials. Add values to the local `.env` file only when you need the corresponding capability:
 
@@ -136,7 +149,7 @@ Do not commit `.env`, `.streamlit/secrets.toml`, API keys, or access tokens. The
 
 If a repository has fewer than three usable open issues, the app creates clearly labeled local placeholders rather than inventing GitHub issue numbers.
 
-## Using the app
+### Using the Python app
 
 1. Paste a public GitHub repository URL.
 2. Select **Generate contribution map**.
@@ -144,24 +157,6 @@ If a repository has fewer than three usable open issues, the app creates clearly
 4. Open an issue on GitHub to confirm that it is current and unclaimed.
 5. Read the project's `CONTRIBUTING.md` and communicate with maintainers before starting a substantial change.
 6. Use **Download map** to save the result as Markdown.
-
-## Deploy on Streamlit Community Cloud
-
-1. Push this repository to GitHub.
-2. Sign in at [Streamlit Community Cloud](https://share.streamlit.io/).
-3. Create an app and select this repository.
-4. Choose the `main` branch and set the entry point to `app.py`.
-5. In **Advanced settings → Secrets**, add any optional credentials as root-level TOML values:
-
-   ```toml
-   GEMINI_API_KEY = "your-key"
-   GITHUB_TOKEN = "your-token"
-   GEMINI_MODEL = "gemini-3.7-flash"
-   ```
-
-6. Select **Deploy**.
-
-The app can be deployed without secrets; it will use anonymous GitHub requests and local analysis.
 
 ## Public GitHub Pages deployment
 
@@ -177,13 +172,17 @@ npm run build:pages
 
 The deployable output is written to `site/out/`.
 
+### Optional Python deployment
+
+The Python prototype can also be deployed to a compatible Python hosting service. Use `app.py` as the entry point and configure `GEMINI_API_KEY`, `GITHUB_TOKEN`, and `GEMINI_MODEL` as server-side secrets when needed. The public GitHub Pages app is the canonical deployment for this repository.
+
 ## Project structure
 
 ```text
 First-Contribution-Map/
 ├── .github/workflows/
 │   └── pages.yml             # Automatic public GitHub Pages deployment
-├── app.py                    # Streamlit interface and result rendering
+├── app.py                    # Optional Python/Streamlit interface
 ├── assets/
 │   └── styles.css            # Application styling
 ├── src/
@@ -191,7 +190,8 @@ First-Contribution-Map/
 │   ├── demo_data.py          # Bundled network-free demo context
 │   └── github_client.py      # GitHub URL validation and API client
 ├── tests/                    # Analyzer, GitHub client, and UI tests
-├── site/                     # Account-free browser application
+├── site/                     # Public Next.js browser application
+│   └── public/media/         # HD overview video, poster, and captions
 ├── .streamlit/
 │   └── config.toml           # Streamlit theme and server defaults
 ├── .env.example              # Optional configuration template
@@ -201,7 +201,7 @@ First-Contribution-Map/
 
 ## Development and testing
 
-Install the development dependencies and run the test suite:
+Install the Python development dependencies and run the test suite:
 
 ```bash
 pip install -r requirements-dev.txt
@@ -210,11 +210,20 @@ pytest
 
 The tests cover repository URL parsing, successful GitHub response handling and pull-request filtering, deterministic analysis, placeholder behavior, a core schema invariant, and basic Streamlit flows.
 
+Validate the public website separately:
+
+```bash
+cd site
+npm ci
+npm run lint
+npm run build:pages
+```
+
 ## Troubleshooting
 
 ### GitHub rate limit reached
 
-Wait for the anonymous limit to reset or add a valid `GITHUB_TOKEN` to `.env`. The token only needs permission to read the public repository data you want to analyze.
+The public browser app intentionally uses anonymous GitHub API access; wait for the limit to reset if it is reached. For the optional Python prototype, you can instead add a valid `GITHUB_TOKEN` to the local `.env` file. Never place a token in the browser application or commit it to Git.
 
 ### Repository cannot be accessed
 
@@ -222,7 +231,7 @@ Confirm that the URL points to `github.com/owner/repository` and that the reposi
 
 ### Gemini is unavailable
 
-Check `GEMINI_API_KEY` and `GEMINI_MODEL`. The app will normally show a local fallback map so the workflow can continue.
+This applies only to the optional Python prototype. Check `GEMINI_API_KEY` and `GEMINI_MODEL`; the Python app will normally show a local fallback map so the workflow can continue.
 
 ### Fewer than three real issue recommendations
 
@@ -259,7 +268,11 @@ Contributions are welcome. A simple workflow is:
 1. Fork the repository.
 2. Create a focused branch.
 3. Make and test your change.
-4. Run `pytest`.
+4. Run the relevant Python tests and/or website checks.
 5. Open a pull request that explains the problem, the solution, and how it was verified.
 
 Good POC follow-up ideas include full file-tree analysis, configurable issue filters, contribution-readiness scoring, caching, accessibility checks, and richer deployment documentation.
+
+## License
+
+No open-source license has been selected yet. Until one is added, standard copyright rules apply; review the repository's license status before reusing or redistributing the code.
