@@ -13,24 +13,38 @@ const geistMono = Geist_Mono({
 });
 
 const isGitHubPages = process.env.GITHUB_PAGES === 'true';
+const canonicalSiteUrl =
+  'https://samu998676.github.io/First-Contribution-Map/';
 const siteUrl = isGitHubPages
-  ? 'https://samu998676.github.io/First-Contribution-Map/'
+  ? canonicalSiteUrl
   : 'https://first-contribution-map.oai-x-carahs-7465.chatgpt.site/';
-const socialImageUrl = new URL(
-  isGitHubPages ? 'og.png' : '/og.png',
-  siteUrl,
-).toString();
+const socialImageUrl = new URL('og.png', canonicalSiteUrl).toString();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  applicationName: 'First Contribution Map',
   title: 'First Contribution Map',
   description:
-    'Turn a public GitHub repository into a newcomer-friendly project map with likely architecture and approachable first-contribution candidates.',
+    'Turn a public GitHub repository into a clear project summary, likely architecture map, and three beginner-friendly contribution paths.',
+  keywords: [
+    'open source',
+    'GitHub',
+    'first contribution',
+    'good first issue',
+    'repository analysis',
+    'developer onboarding',
+  ],
+  creator: 'samu998676',
+  category: 'developer tools',
+  alternates: {
+    canonical: canonicalSiteUrl,
+  },
   openGraph: {
     title: 'First Contribution Map',
-    description:
-      'Understand a repository and find your first meaningful pull request.',
+    description: 'Understand a repository. Find your first meaningful PR.',
     type: 'website',
+    url: canonicalSiteUrl,
+    siteName: 'First Contribution Map',
     images: [
       {
         url: socialImageUrl,
@@ -43,8 +57,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'First Contribution Map',
-    description:
-      'Understand a repository and find your first meaningful pull request.',
+    description: 'Understand a repository. Find your first meaningful PR.',
     images: [socialImageUrl],
   },
 };
