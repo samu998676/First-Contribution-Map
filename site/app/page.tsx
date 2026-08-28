@@ -537,6 +537,69 @@ export default function Home() {
       ) : null}
 
       {!map && !loading ? (
+        <section className="overview-video" aria-labelledby="overview-video-title">
+          <div className="overview-video-header">
+            <div className="overview-video-copy">
+              <p className="section-kicker">49-second product overview</p>
+              <h2 id="overview-video-title">See First Contribution Map in action</h2>
+              <p>
+                See the challenge, the solution, and the complete path from a public repository
+                to a confident first-contribution starting point.
+              </p>
+            </div>
+            <a
+              className="overview-download"
+              href="media/first-contribution-map-overview.mp4"
+              download="first-contribution-map-overview.mp4"
+            >
+              Download HD video <span aria-hidden="true">↓</span>
+            </a>
+          </div>
+
+          <div className="overview-video-frame">
+            <video
+              controls
+              playsInline
+              preload="metadata"
+              poster="media/first-contribution-map-overview-poster.jpg"
+              aria-label="First Contribution Map product overview"
+            >
+              <source src="media/first-contribution-map-overview.mp4" type="video/mp4" />
+              <track
+                default
+                kind="captions"
+                src="media/first-contribution-map-overview.vtt"
+                srcLang="en"
+                label="English"
+              />
+              Your browser cannot play this video.{' '}
+              <a
+                href="media/first-contribution-map-overview.mp4"
+                download="first-contribution-map-overview.mp4"
+              >
+                Download the HD video instead.
+              </a>
+            </video>
+          </div>
+
+          <div className="overview-points" aria-label="Video overview">
+            <article>
+              <span>Challenge</span>
+              <p>New contributors face too much context and no clear entry point.</p>
+            </article>
+            <article>
+              <span>Solution</span>
+              <p>The map explains the project, its likely seams, and approachable issues.</p>
+            </article>
+            <article>
+              <span>Outcome</span>
+              <p>Less time decoding the codebase and more confidence starting a useful PR.</p>
+            </article>
+          </div>
+        </section>
+      ) : null}
+
+      {!map && !loading ? (
         <section className="onboarding" aria-labelledby="onboarding-title">
           <div className="section-heading">
             <p className="section-kicker">How it works</p>
