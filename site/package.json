@@ -1,7 +1,23 @@
 {
-  "name": "sites-project",
+  "name": "first-contribution-map",
   "version": "0.1.0",
+  "description": "Turn a public GitHub repository into a clear architecture overview and three beginner-friendly contribution paths.",
   "private": true,
+  "homepage": "https://samu998676.github.io/First-Contribution-Map/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samu998676/First-Contribution-Map.git"
+  },
+  "bugs": {
+    "url": "https://github.com/samu998676/First-Contribution-Map/issues"
+  },
+  "keywords": [
+    "open-source",
+    "github",
+    "repository-analysis",
+    "first-contribution",
+    "developer-tools"
+  ],
   "engines": {
     "node": ">=22.13.0"
   },
