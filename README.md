@@ -18,6 +18,8 @@ Open **[First Contribution Map](https://samu998676.github.io/First-Contribution-
 
 The public website reads public repository metadata, README content, and recent open issues directly from GitHub. It performs deterministic analysis in the browser and never clones or writes to the repository.
 
+Watch or download the **[49-second HD product overview](https://samu998676.github.io/First-Contribution-Map/media/first-contribution-map-overview.mp4)** for a concise explanation of the challenge, the solution, and the complete workflow.
+
 ## Try it in two minutes
 
 For the quickest start, open the [public website](https://samu998676.github.io/First-Contribution-Map/) and select **View guided demo**. To run the Python/Streamlit version locally without an API key or internet access:
