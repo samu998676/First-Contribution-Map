@@ -12,9 +12,15 @@ Paste a public GitHub repository URL and the app turns the repository's README, 
 
 > **Project status:** Working POC. Recommendations are generated from limited public context and should be confirmed with the repository maintainers before work begins.
 
+## Public website
+
+Open **[First Contribution Map](https://samu998676.github.io/First-Contribution-Map/)** in any modern browser. The GitHub Pages version is public and requires no account, sign-in, API key, or installation.
+
+The public website reads public repository metadata, README content, and recent open issues directly from GitHub. It performs deterministic analysis in the browser and never clones or writes to the repository.
+
 ## Try it in two minutes
 
-After completing the dependency installation in [Local setup](#local-setup), you can explore the full interface without an API key or internet access:
+For the quickest start, open the [public website](https://samu998676.github.io/First-Contribution-Map/) and select **View guided demo**. To run the Python/Streamlit version locally without an API key or internet access:
 
 1. Start the app with `streamlit run app.py`.
 2. Open the local address shown in the terminal.
@@ -155,10 +161,26 @@ If a repository has fewer than three usable open issues, the app creates clearly
 
 The app can be deployed without secrets; it will use anonymous GitHub requests and local analysis.
 
+## Public GitHub Pages deployment
+
+The account-free browser version lives in `site/` and is deployed automatically by `.github/workflows/pages.yml` whenever `main` changes. The deployment builds a static Next.js export, so GitHub Pages does not need a server or application secrets.
+
+To reproduce the static build locally:
+
+```bash
+cd site
+npm ci
+npm run build:pages
+```
+
+The deployable output is written to `site/out/`.
+
 ## Project structure
 
 ```text
 First-Contribution-Map/
+├── .github/workflows/
+│   └── pages.yml             # Automatic public GitHub Pages deployment
 ├── app.py                    # Streamlit interface and result rendering
 ├── assets/
 │   └── styles.css            # Application styling
@@ -167,6 +189,7 @@ First-Contribution-Map/
 │   ├── demo_data.py          # Bundled network-free demo context
 │   └── github_client.py      # GitHub URL validation and API client
 ├── tests/                    # Analyzer, GitHub client, and UI tests
+├── site/                     # Account-free browser application
 ├── .streamlit/
 │   └── config.toml           # Streamlit theme and server defaults
 ├── .env.example              # Optional configuration template
